@@ -4,15 +4,17 @@
 
 During busier times of the year it is necessary to use management resouces in place of traditional employees to help alleviate operational stressors.  The managerial resouces can be  
 scatted across the country at any given point and their ability to help customers is in direct correlation to their geographic distance to those customers for fast and efficient response times  
-and of course asset utilization.
+and of course asset utilization. 
 
-Using address information for customers, we can convert that data into Latitude and Longitude as well as home address information of assets and come up with a rolling distance list of assets in realtion
-to customers - For this particular project, the stakeholders wanted a 10 person list by ascending distance.
+Using address information for customers, we can convert that data into Latitude and Loingitude as well as home address information of assets and come up with a rolling distance list of assets in relation 
+to customers - for this particular project, the stakeholder wanted a 10 person list by ascending distance
+
 ----
+** Disclainer - This dataset is not active and has some omissions to protect any possible Intellectual Property
 
 ## Table of Contents
 - [Tools](#Tools)
-- [Data Acquisition / SQL Preperation](#Data-Acquisition)
+- [Data and File Preperation](#Data Perperation and Setup)
 - [Excel Configuration](#Excel-Configuration)
 - [VBA](#Some-Vba)
 - [Formulas](#Formulas)
@@ -28,9 +30,14 @@ On Prem T-SQL database, moderately normalized
 - T-Sql   | Data Acqusition
 - API     | Google Geocode API
 
-## Data Acquisition
+## Data Perperation and Setup
 
 - Having a static list of Account information and address info, using web resources we generated a list of account Lat/Long data - this was our baseline to compare things to
+
+- Putting this into an excel file and making some pertinent information hidden was our starting point 
+
+- ![res_locator_1](https://github.com/DonChart/Geographical_Distance_Locator_Using_API/assets/168656623/879427eb-638e-4784-bb98-0f5a1ed14ce0)
+
 
 
 ---
