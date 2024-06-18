@@ -9,12 +9,14 @@ and of course asset utilization.
 Using address information for customers, we can convert that data into Latitude and Loingitude as well as home address information of assets and come up with a rolling distance list of assets in relation 
 to customers - for this particular project, the stakeholder wanted a 10 person list by ascending distance
 
+Utilizing the Google API - we are also able to plug in any address for other potential needed addresses and a Distance range and pull all emplyees in that range
+
 ----
 ** Disclainer - This dataset is not active and has some omissions to protect any possible Intellectual Property
 
 ## Table of Contents
 - [Tools](#Tools)
-- [Data and File Preperation](#Data Perperation and Setup)
+- [Data and File Preperation](#Data-Perperation-and-Setup)
 - [Excel Configuration](#Excel-Configuration)
 - [VBA](#Some-Vba)
 - [Formulas](#Formulas)
@@ -26,22 +28,19 @@ to customers - for this particular project, the stakeholder wanted a 10 person l
 On Prem T-SQL database, moderately normalized
 
 ## Tools
-- Excel   | Data Presentation to End User
+- Excel   | Data Presentation to End User / Primary functional program
 - T-Sql   | Data Acqusition
 - API     | Google Geocode API
 
 ## Data Perperation and Setup
 
 - Having a static list of Account information and address info, using web resources we generated a list of account Lat/Long data - this was our baseline to compare things to
-
 - Putting this into an excel file and making some pertinent information hidden was our starting point 
 
 - ![res_locator_1](https://github.com/DonChart/Geographical_Distance_Locator_Using_API/assets/168656623/879427eb-638e-4784-bb98-0f5a1ed14ce0)
 
+- Generating a list of employess and their address Lat/Long and indexing it allows us to place a Matrix of hidden data to the right of our user interface to perform some calculations
 
-
----
-- The base Matrix_Raw table would contain our lowest level of data and allow for further analysis and use in the future if any results were required outside of the initial scope.  This table would contain our complete hierarchal breakdown.  there is nothing outstanding about this base table other than it's going to be the base layer of all applicable data moving forward.  This base table is the building block for all analysis moving forward.
 ~~~~
 CREATE TABLE [rpt].[t_82292_BSC_ESTIMATOR_MATRIX_RAW]
 (
