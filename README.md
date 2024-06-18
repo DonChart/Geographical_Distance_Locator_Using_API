@@ -112,6 +112,9 @@ and returns the next employee at @25.09 miles
 We carry this process across 10 levels to give our stakeholder a complete picture
 
 
+![res_locator_4](https://github.com/DonChart/Geographical_Distance_Locator_Using_API/assets/168656623/e4f15890-e141-4dcf-b9bb-0d8eda4e2188)
+
+
 
 
 ## Excel Configuration
