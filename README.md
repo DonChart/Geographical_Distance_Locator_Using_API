@@ -2,9 +2,7 @@
 ----
 ## Project Overview
 
-During busier times of the year it is necessary to use management resouces in place of traditional employees to help alleviate operational stressors.  The managerial resouces can be  
-scatted across the country at any given point and their ability to help customers is in direct correlation to their geographic distance to those customers for fast and efficient response times  
-and of course asset utilization. 
+During busier times of the year it is necessary to use management resouces in place of traditional employees to help alleviate operational stressors.  The managerial resouces can be scatted across the country at any given point and their ability to help customers is in direct correlation to their geographic distance to those customers for fast and efficient response times and of course asset utilization. 
 
 Using address information for customers, we can convert that data into Latitude and Loingitude as well as home address information of assets and come up with a rolling distance list of assets in relation 
 to customers - for this particular project, the stakeholder wanted a 10 person list by ascending distance
@@ -77,6 +75,10 @@ So, the result of this formula will be the distance between the two points in mi
 
 
 Once generated and approprate cells locked down it was copied throughou the matrix
+----
+
+Now that we have a matrix of all employees and their realtive distance to our source address, it a straightforward process to generate who is the closest using ome Excel Formula's  
+The Distance in Miles for our closest employee (Position 1) 
 
 
 ~~~~
