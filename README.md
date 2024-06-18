@@ -34,12 +34,50 @@ On Prem T-SQL database, moderately normalized
 
 ## Data Perperation and Setup
 
-- Having a static list of Account information and address info, using web resources we generated a list of account Lat/Long data - this was our baseline to compare things to
-- Putting this into an excel file and making some pertinent information hidden was our starting point 
+ Having a static list of Account information and address info, using web resources we generated a list of account Lat/Long data - this was our baseline to compare things to
+ Putting this into an excel file and making some pertinent information hidden was our starting point  
+ 
 
-- ![res_locator_1](https://github.com/DonChart/Geographical_Distance_Locator_Using_API/assets/168656623/879427eb-638e-4784-bb98-0f5a1ed14ce0)
+ ![res_locator_1](https://github.com/DonChart/Geographical_Distance_Locator_Using_API/assets/168656623/879427eb-638e-4784-bb98-0f5a1ed14ce0)
 
-- Generating a list of employess and their address Lat/Long and indexing it allows us to place a Matrix of hidden data to the right of our user interface to perform some calculations
+ Generating a list of employess and their address Lat/Long and indexing it allows us to place a Matrix of hidden data to the right of our user interface to perform some calculations
+
+![res_locator_2](https://github.com/DonChart/Geographical_Distance_Locator_Using_API/assets/168656623/66b84baf-17ce-4390-bcff-bafb45a1278c)  
+
+Those Distance in Miles cells are generated using the Customer Address Lat/Long and comparing it to the Employee Home Address Lat/Long using some advanced math in Excel related to the
+Haversine formula - this formula is used to calculate the distance between two points on Earth
+
+----
+~~~~
+=6371*ACOS(COS(RADIANS(90-$I8))*COS(RADIANS(90-EB$3))+SIN(RADIANS(90-$I8))*SIN(RADIANS(90-EB$3))*COS(RADIANS($J8-EB$4)))/1.609
+~~~~
+----
+### A Quick Breakdown of the formula components:
+
+Radius of the Earth (6371): The Earth's radius is assumed to be 6371 kilometers.
+
+ACOS function: Calculates the arccosine of the value inside it. This is used to compute the central angle between the two points on the Earth's surface.
+
+COS and SIN functions with RADIANS: These functions convert degrees to radians (since trigonometric functions in Excel use radians).
+
+RADIANS(90 - $I8) and RADIANS(90 - EB$3) convert latitude values to radians for point 1 and point 2 respectively.
+RADIANS($J8 - EB$4) converts the difference in longitudes between the two points to radians.
+Spherical Law of Cosines: The formula inside ACOS calculates the distance using the spherical law of cosines, which is suitable for short distances (e.g., within the same city or region).
+
+Divide by 1.609: This converts the result from kilometers to miles (since 1 kilometer ≈ 0.621371 miles).
+
+Interpretation:
+$I8: Latitude of point 1 (in degrees).
+EB$3: Latitude of point 2 (in degrees).
+$J8: Longitude of point 1 (in degrees).
+EB$4: Longitude of point 2 (in degrees).
+The formula calculates the distance between the points defined by latitude and longitude coordinates ($I8, $J8) and (EB$3, EB$4) on the Earth's surface, taking into account the curvature of the Earth (using the spherical law of cosines) and converting the result from kilometers to miles.
+
+So, the result of this formula will be the distance between the two points in miles.
+
+
+Once generated and approprate cells locked down it was copied throughou the matrix
+
 
 ~~~~
 CREATE TABLE [rpt].[t_82292_BSC_ESTIMATOR_MATRIX_RAW]
