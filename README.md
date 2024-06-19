@@ -286,7 +286,14 @@ End Function
 
 ~~~~
 
+Utlizing the same hidden matrix, employee distance ranges calculate and we apply formulas in hidden columns B and D to whittle down employees within our entered Distance range
 
+![res_locator_6](https://github.com/DonChart/Geographical_Distance_Locator_Using_API/assets/168656623/156de0cb-6f3d-44d0-8cb7-ad1a4cba24d5)
+
+~~~~
+=SMALL($Y13:$AKM13,1)
+=IF(B13=0,0,MIN(IF($Y13:$AKM14>B13,IF($Y13:$AKM14<=$H$7,$Y13:$AKM14))))
+~~~~
 
 
 ## Final Thoughts
