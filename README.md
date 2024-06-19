@@ -111,9 +111,180 @@ and returns the next employee at @25.09 miles
 
 We carry this process across 10 levels to give our stakeholder a complete picture
 
+![res_locator_5](https://github.com/DonChart/Geographical_Distance_Locator_Using_API/assets/168656623/dd14bb17-5db6-43cc-9806-171d2dd6e22a)
 
-![res_locator_4](https://github.com/DonChart/Geographical_Distance_Locator_Using_API/assets/168656623/e4f15890-e141-4dcf-b9bb-0d8eda4e2188)
 
+----
+
+## Excel VBA
+The stakeholders also asked for the ability to add any address and get a list of available resources within a defined range - here is where we use some Google API 
+From the Excel file, an interface was setup that allowed for an address entry 
+
+The address information goes through some Google Address validation that finds it's Lat/Lon
+ * Note - some of this code sourced from web and modified to suit our needs
+
+~~~~
+Function G_ADDRESS( _
+    InputLocation As Variant, _
+    Optional Requery = False)
+Dim Wait As Long
+    Wait = WAIT_TIME
+    ' No wait on first call
+    G_ADDRESS = G_LATLNG(InputLocation, 4)
+    ' If being throttled try calls at increasing time separations
+    While (G_ADDRESS = "OVER_QUERY_LIMIT") And (Wait > 4000)
+        G_ADDRESS = G_LATLNG(InputLocation, 4, Wait)
+        Wait = Wait * 2
+    Wend
+    ' If still returning over query limit then hard the limit for the day
+    ' has been reached for this IP address
+    If G_ADDRESS = "OVER_QUERY_LIMIT" Then
+        G_ADDRESS = "OVER_HARD_QUERY_LIMIT"
+    End If
+End Function
+
+
+Function G_LAT( _
+    InputLocation As Variant, _
+    Optional Requery = False)
+' Returns latitude of a location by querying Google Geocoding API
+Dim Wait As Long
+    Wait = WAIT_TIME
+    ' No wait on first call
+    G_LAT = G_LATLNG(InputLocation, 2)
+    ' If being throttled try calls at increasing time separations
+    While (G_LAT = "OVER_QUERY_LIMIT") And (Wait > 4000)
+        G_LAT = G_LATLNG(InputLocation, 2, Wait)
+        Wait = Wait * 2
+    Wend
+    ' If still over query limit then hard the limit for the day
+    ' has been reached for this IP address
+    If G_LAT = "OVER_QUERY_LIMIT" Then
+        G_LAT = "OVER_HARD_QUERY_LIMIT"
+    End If
+End Function
+
+Function G_LONG( _
+    InputLocation As Variant, _
+    Optional Requery = False)
+' Returns longitude of a location by querying Google Geocoding API
+Dim Wait As Long
+    Wait = WAIT_TIME
+    ' No wait on first call
+    G_LONG = G_LATLNG(InputLocation, 3)
+    ' If being throttled try calls at increasing time separations
+    While (G_LONG = "OVER_QUERY_LIMIT") And (Wait > 4000)
+        G_LONG = G_LATLNG(InputLocation, 3, Wait)
+        Wait = Wait * 2
+    Wend
+    ' If still over query limit then hard the limit for the day
+    ' has been reached for this IP address
+    If G_LONG = "OVER_QUERY_LIMIT" Then
+        G_LONG = "OVER_HARD_QUERY_LIMIT"
+    End If
+End Function
+
+Function G_LATLNG( _
+    InputLocation As Variant, _
+    Optional N As Long = 1, _
+    Optional Wait As Long, _
+    Optional Requery As Boolean = False _
+    ) As Variant
+' Requires a reference to Microsoft XML, v6.0
+' The parameter 'n' refers to the type of reponse
+' N = 1 -> Returns latitude, longitude as string
+' N = 2 -> Returns latitude as double
+' N = 3 -> Returns longitude as double
+' N = 4 -> Returns address as string
+
+' Updated 30/10/2012 to
+'   - return an #N/A error if an error occurs
+'   - cache only if necessary
+'   - check for and attempt to correct cached errors
+'   - work on systems with comma as decimal separator
+
+Dim myRequest As XMLHTTP60
+Dim myDomDoc As DOMDocument60
+Dim addressNode As IXMLDOMNode
+Dim latNode As IXMLDOMNode
+Dim lngNode As IXMLDOMNode
+Dim statusNode As IXMLDOMNode
+Dim CachedFile As String
+Dim NoCache As Boolean
+Dim V() As Variant
+    On Error GoTo exitRoute
+    G_LATLNG = CVErr(xlErrNA) ' Return an #N/A error in the case of any errors
+    ReDim V(1 To 4)
+    
+    ' Check and clean inputs
+    If WorksheetFunction.IsNumber(InputLocation) _
+        Or IsEmpty(InputLocation) _
+        Or InputLocation = "" Then GoTo exitRoute
+    Sleep (Wait)
+    
+    InputLocation = URLEncode(CStr(InputLocation), True)
+    
+    ' Check for existence of cached file
+    CachedFile = Environ("temp") & "\" & InputLocation & "_LatLng.xml"
+    NoCache = (Len(Dir(CachedFile)) = 0)
+    
+    Set myRequest = New XMLHTTP60
+    
+    If NoCache Or Requery Then ' if no cached file exists or if asked to requery then query Google
+        Sleep (Wait)
+        ' Read the XML data from the Google Maps API
+        myRequest.Open "GET", "http://maps.googleapis.com/maps/api/geocode/xml?address=" _
+            & InputLocation _
+            & "&sensor=false", False
+        myRequest.Send
+        ' Make the XML readable using XPath
+        Set myDomDoc = New DOMDocument60
+        myDomDoc.LoadXML myRequest.responseText
+    Else ' otherwise query the cached file
+        myRequest.Open "GET", CachedFile
+        myRequest.Send
+        ' Make the XML readable using XPath
+        Set myDomDoc = New DOMDocument60
+        myDomDoc.LoadXML myRequest.responseText
+        ' Get the status code of the cached XML file in case of previously cached errors
+        Set statusNode = myDomDoc.SelectSingleNode("//status")
+        If statusNode Is Nothing Then ' A misformed file has probably been cached
+            G_LATLNG = G_LATLNG(InputLocation, N, True) ' Recursive way to try to remove cached errors
+            Exit Function
+        ElseIf statusNode.Text <> "OK" Then ' A file with no result has been cached
+            G_LATLNG = G_LATLNG(InputLocation, N, True) ' Recursive way to try to remove cached errors
+            Exit Function
+        End If
+    End If
+    
+    ' If statusNode is "OK" then get the values to return
+    Set statusNode = myDomDoc.SelectSingleNode("//status")
+    If statusNode.Text = "OK" Then
+        ' Get the location as returned by Google
+        Set addressNode = myDomDoc.SelectSingleNode("//result/formatted_address")
+        ' Get the latitude and longitude node values
+        Set latNode = myDomDoc.SelectSingleNode("//result/geometry/location/lat")
+        Set lngNode = myDomDoc.SelectSingleNode("//result/geometry/location/lng")
+        V(1) = latNode.Text & "," & lngNode.Text
+        V(2) = val(latNode.Text) ' Fixed for systems with comma as decimal separator
+        V(3) = val(lngNode.Text) ' Fixed for systems with comma as decimal separator
+        V(4) = addressNode.Text
+        G_LATLNG = V(N)
+        ' Cache API response if required
+        If NoCache Then: Call CreateFile(CachedFile, myRequest.responseText)
+    Else
+        G_LATLNG = statusNode.Text
+    End If
+
+exitRoute:
+    ' Tidy up
+    Set latNode = Nothing
+    Set lngNode = Nothing
+    Set myDomDoc = Nothing
+    Set myRequest = Nothing
+End Function
+
+~~~~
 
 
 
