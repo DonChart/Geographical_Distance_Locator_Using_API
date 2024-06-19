@@ -15,9 +15,8 @@ Utilizing the Google API - we are also able to plug in any address for other pot
 ## Table of Contents
 - [Tools](#Tools)
 - [Data and File Preperation](#Data-Perperation-and-Setup)
-- [Excel Configuration](#Excel-Configuration)
-- [VBA](#Some-Vba)
-- [Formulas](#Formulas)
+- [Excel Formula - Haversine](#Haversine-formula)
+- [VBA/API Usage](#Excel-Vba-API)
 - [Final Thoughts](#Final-Thoughts)
 
 
@@ -116,7 +115,7 @@ We carry this process across 10 levels to give our stakeholder a complete pictur
 
 ----
 
-## Excel VBA
+## Excel VBA API
 The stakeholders also asked for the ability to add any address and get a list of available resources within a defined range - here is where we use some Google API 
 From the Excel file, an interface was setup that allowed for an address entry 
 
@@ -295,9 +294,11 @@ Utlizing the same hidden matrix, employee distance ranges calculate and we apply
 =IF(B13=0,0,MIN(IF($Y13:$AKM14>B13,IF($Y13:$AKM14<=$H$7,$Y13:$AKM14))))
 ~~~~
 
+User can change source address and range of employee distance needed for easy and accuate location and contact info to activate employees as needed
+
+![res_locator_7](https://github.com/DonChart/Geographical_Distance_Locator_Using_API/assets/168656623/2b39b502-c263-484e-ac6d-30d7afa4e2c9)
+
 
 ## Final Thoughts
 
-This particular project was a lot more in depth and complex that I first thought when laying out its requirements with the stakeholders.  It's descriptive seems simple, for every x identity, there will be y number of scorable achievements - add all scores up and rank them over time across the organizational hierarchy.  The back end SQL is the real workhorse of this project because it eliminates a lot of front end Excel calculations.  I attempted to modualize each section so that it would be flexible enough for future changes and uses.  
-
-It would have been far easier to pull raw data into Excel using PowerPivot and DAX calculation information on the fly as the sheet was manipulated by the user but the number crunching across several elements and points in time would have not only blown up the file size when using it, it also would have really affected it's usability and speed.
+A very rewarding project but very difficuly in it's inception.  If I had to reapproach a solution and had more time I would probably work toward generating a windows application for this to make the end result user interface a bit cleaner and locked down.  This particular application got very heavy usage during peak periods for several years and always performed wonderfully.
